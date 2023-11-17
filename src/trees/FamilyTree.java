@@ -11,19 +11,19 @@ public class FamilyTree
     
     private static class TreeNode<T>
     {
-        private String                    data;
+        private T                    data;
         private TreeNode<T>                parent;
         private ArrayList<TreeNode<T>>        children;
         
         
-        TreeNode(String name)
+        TreeNode(T name)
         {
             this.data = name;
             children = new ArrayList<>();
         }
         
         
-        String getData()
+        T getData()
         {
             return data;
         }
