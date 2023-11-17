@@ -9,27 +9,27 @@ import javax.swing.filechooser.*;
 public class FamilyTree
 {
     
-    private static class TreeNode
+    private static class TreeNode<T>
     {
-        private String                    name;
-        private TreeNode                parent;
-        private ArrayList<TreeNode>        children;
+        private String                    data;
+        private TreeNode<T>                parent;
+        private ArrayList<TreeNode<T>>        children;
         
         
         TreeNode(String name)
         {
-            this.name = name;
+            this.data = name;
             children = new ArrayList<>();
         }
         
         
-        String getName()
+        String getData()
         {
-            return name;
+            return data;
         }
         
         
-        void addChild(TreeNode childNode)
+        void addChild(TreeNode<T> childNode)
         {
             this.children.add(childNode);
             childNode.parent = this;
@@ -38,19 +38,19 @@ public class FamilyTree
         
         // Searches subtree at this node for a node
         // with the given name. Returns the node, or null if not found.
-        TreeNode getNodeWithName(String targetName)
+        TreeNode<T> getNodeWithName(String targetName)
         {
             // Does this node have the target name?
-            if (this.name.equals(targetName)) {
+            if (this.data.equals(targetName)) {
             	return this;
             }
                 
             // No, recurse. Check all children of this node.
-            for (TreeNode child: children)
+            for (TreeNode<?> child: children)
             {
                 // If child.getNodeWithName(targetName) returns a non-null node,
                 // then that's the node we're looking for. Return it.
-            	TreeNode temp = child.getNodeWithName(targetName);
+            	TreeNode<T> temp = (TreeNode<T>) child.getNodeWithName(targetName);
             	
             	if (temp != null) {
             		return temp;
@@ -64,11 +64,11 @@ public class FamilyTree
         
         // Returns a list of ancestors of this TreeNode, starting with this node’s parent and
         // ending with the root. Order is from recent to ancient.
-        ArrayList<TreeNode> collectAncestorsToList()
+        ArrayList<TreeNode<T>> collectAncestorsToList()
         {
-            ArrayList<TreeNode> ancestors = new ArrayList<>();
+            ArrayList<TreeNode<T>> ancestors = new ArrayList<>();
 
-            TreeNode curr = this.parent;
+            TreeNode<T> curr = this.parent;
             
             while (curr!= null) {
             	ancestors.add(curr);
@@ -87,15 +87,15 @@ public class FamilyTree
         
         private String toStringWithIndent(String indent)
         {
-            String s = indent + name + "\n";
+            String s = indent + data + "\n";
             indent += "  ";
-            for (TreeNode childNode: children)
+            for (TreeNode<?> childNode: children)
                 s += childNode.toStringWithIndent(indent);
             return s;
         }
     }
 
-	private TreeNode			root;
+	private TreeNode<String>			root;
 	
 	
 	//
@@ -145,9 +145,9 @@ public class FamilyTree
 		// Find parent node. If root is null then the tree is empty and the
 		// parent node must be constructed. Otherwise the parent node should be 
 		// somewhere in the tree.
-		TreeNode parentNode;
+		TreeNode<String> parentNode;
 		if (root == null)
-			parentNode = root = new TreeNode(parent);
+			parentNode = root = new TreeNode<String>(parent);
 		else
 		{
 			parentNode = root.getNodeWithName(parent);
@@ -155,7 +155,7 @@ public class FamilyTree
 		}
 		// Add child nodes to parentNode.
 		for(String child  : childrenArray) {
-			parentNode.addChild(new TreeNode(child));
+			parentNode.addChild(new TreeNode<String>(child));
 		}
 	}
 	
@@ -166,21 +166,21 @@ public class FamilyTree
 	// "Depth" of a node is the "distance" between that node and the root. The depth of the root is 0. The
 	// depth of the root's immediate children is 1, and so on.
 	//
-	TreeNode getMostRecentCommonAncestor(String name1, String name2) throws TreeException
+	TreeNode<?> getMostRecentCommonAncestor(String name1, String name2) throws TreeException
 	{
 		// Get nodes for input names.
-		TreeNode node1 = root.getNodeWithName(name1);		// node whose name is name1
+		TreeNode<String> node1 = root.getNodeWithName(name1);		// node whose name is name1
 		if (node1 == null) throw new TreeException("No such node with name: " + name1);
-		TreeNode node2 = root.getNodeWithName(name2);		// node whose name is name2
+		TreeNode<String> node2 = root.getNodeWithName(name2);		// node whose name is name2
 		if (node2 == null) throw new TreeException("No such node with name: " + name2);
 		
 		// Get ancestors of node1 and node2.
-		ArrayList<TreeNode> ancestorsOf1 = node1.collectAncestorsToList();
-		ArrayList<TreeNode> ancestorsOf2 = node2.collectAncestorsToList();
+		ArrayList<TreeNode<String>> ancestorsOf1 = node1.collectAncestorsToList();
+		ArrayList<TreeNode<String>> ancestorsOf2 = node2.collectAncestorsToList();
 		
 		// Check members of ancestorsOf1 in order until you find a node that is also
 		// an ancestor of 2. 
-		for (TreeNode n1: ancestorsOf1) {
+		for (TreeNode<?> n1: ancestorsOf1) {
 			if (ancestorsOf2.contains(n1)) {
 				return n1;
 			}
@@ -203,8 +203,8 @@ public class FamilyTree
 		{
 			FamilyTree tree = new FamilyTree();
 			System.out.println("Tree:\n" + tree + "\n**************\n");
-			TreeNode ancestor = tree.getMostRecentCommonAncestor("Bilbo", "Frodo");
-			System.out.println("Most recent common ancestor of Bilbo and Frodo is " + ancestor.getName());
+			TreeNode<?> ancestor = tree.getMostRecentCommonAncestor("Bilbo", "Frodo");
+			System.out.println("Most recent common ancestor of Bilbo and Frodo is " + ancestor.getData());
 		}
 		catch (IOException x)
 		{

@@ -1,0 +1,16 @@
+Root:A,B,C,D
+A:ab,ac,ad,ae,af
+B:ba,bc,bd,be,bf
+D:broke
+C:ca,cb,cc,cd,cf
+ac:dog,cat,cat2,cat3,cat4
+ae:noone
+bd:homeless
+cc:johnson
+ba:alex,dave,alexa
+cf:cat324,cat234,fatCat
+cb:anotherDog
+ab:jobless
+ae:sad
+af:notSad
+cf:kevin
